@@ -84,4 +84,17 @@ class GuavaOrderingTest {
     def ordering = Ordering.from(comp)
     assertTrue(ordering.compare(a,b) < 0)
   }
+  
+  @Test
+  public void testMax() {
+    def byFirstName = Ordering.natural().onResultOf(firstNameFn)
+    def byLastName = Ordering.natural().onResultOf(lastNameFn)
+    def firstThenLast = byLastName.compound(byFirstName)
+    
+    def people = ImmutableList.of(new People("a", "a"),
+      new People("xx", "b"), new People("yy", "c"))
+    
+    assertEquals(firstThenLast.max(people).getFirstName(), "yy")
+    assertEquals(firstThenLast.min(people).getFirstName(), "a")
+  }
 }
