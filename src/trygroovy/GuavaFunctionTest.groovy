@@ -3,6 +3,8 @@ package trygroovy;
 import com.google.common.base.Functions;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -36,6 +38,29 @@ class GuavaFunctionTest {
     assertEquals(f.apply("a"), "a")
     assertEquals(f.apply("b"), "b")
   }
+  
+  @Test
+  public void testForPredicate(){
+    def pred = new Predicate<Integer>() { 
+      @Override
+      public boolean apply(Integer i) {
+        return i>2;
+      }
+    }
+    def f = Functions.forPredicate(pred)
+    assertTrue(f.apply(3))
+    assertFalse(f.apply(2))
+  }
+   
+  @Test 
+  public void testSupplier() {
+    def sup = new Supplier<Integer>() {
+      Integer get() { return 1; }
+    }
+    def f = Functions.forSupplier(sup)
+    assertEquals(f.apply(1), 1)
+    assertEquals(f.apply("a"), 1)
+  } 
 
   @Test
   public void testToString(){
