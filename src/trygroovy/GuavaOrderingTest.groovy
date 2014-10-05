@@ -2,7 +2,9 @@ package trygroovy;
 
 import com.google.common.collect.Ordering
 import com.google.common.base.Function
+import com.google.common.collect.ImmutableList
 
+import java.util.Comparator
 import static org.junit.Assert.*
 import org.junit.Test
 
@@ -46,7 +48,6 @@ class GuavaOrderingTest {
     assertTrue(ordering.compare(a.lastName, b.lastName) > 0)
   }
   
-  
   @Test
   public void testCompound(){
     def a = new People("a", "1")
@@ -54,13 +55,33 @@ class GuavaOrderingTest {
     def c = new People("b", "1")
     def byFirstName = Ordering.natural().onResultOf(firstNameFn)
     def byLastName = Ordering.natural().onResultOf(lastNameFn)
-    assertEquals(byFirstName.compare(a,b), -1)
-    assertEquals(byLastName.compare(a,b), 1)
+    assertTrue(byFirstName.compare(a,b) < 0)
+    assertTrue(byLastName.compare(a,b) > 0)
     
     def firstThenLast = byFirstName.compound(byLastName) 
-    assertEquals(firstThenLast.compare(a,b), -1)
-    assertEquals(firstThenLast.compare(b,c), -1)
-    
+    assertTrue(firstThenLast.compare(a,b) < 0)
+    assertTrue(firstThenLast.compare(b,c) < 0) 
   }
-
+  
+  @Test
+  public void testExplicitOrdering(){
+    def l = ImmutableList.of("a", "c", "b")
+    def ordering = Ordering.explicit(l)
+    assertTrue(ordering.compare("a", "b")<0)
+    assertTrue(ordering.compare("b", "c")>0)
+  }
+  
+  @Test
+  public void testUsingComparator() {
+    // Test ordering using existing java style comparators
+    def comp = new Comparator<People> () {
+      int compare(People a, People b) {
+        return a.firstName.compareTo(b.firstName)
+      }
+    }
+    def a = new People("a", "1")
+    def b = new People("b", "0")
+    def ordering = Ordering.from(comp)
+    assertTrue(ordering.compare(a,b) < 0)
+  }
 }
