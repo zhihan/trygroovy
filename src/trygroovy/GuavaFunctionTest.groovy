@@ -90,4 +90,24 @@ class GuavaFunctionTest {
     assertEquals(x.apply(1), 4)
     assertEquals(x.apply(2), 0)
   }
+  
+  class PairString {
+    String fst;
+    String snd;
+    PairString(String f, String s) {
+      fst = f
+      snd = s
+    }
+  }
+  
+  @Test 
+  public void testExtractor() {
+    def p = new PairString("first", "second")
+    def fst = new Function<PairString, String>(){
+      String apply(PairString x) {
+        return x.fst
+      }
+    }
+    assertEquals(fst.apply(p), "first")
+  }
 }
