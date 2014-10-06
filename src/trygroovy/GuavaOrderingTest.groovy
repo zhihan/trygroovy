@@ -97,4 +97,38 @@ class GuavaOrderingTest {
     assertEquals(firstThenLast.max(people).getFirstName(), "yy")
     assertEquals(firstThenLast.min(people).getFirstName(), "a")
   }
+  
+  @Test
+  public void testSortedCopy(){
+    def byFirstName = Ordering.natural().onResultOf(firstNameFn)
+    def people = ImmutableList.of(new People("zz", "a"),
+        new People("xx", "b"), new People("yy", "c"))
+    def sorted = byFirstName.sortedCopy(people)
+
+    People first = sorted.get(0)
+    assertEquals(first.firstName, "xx")
+
+    People second = sorted.get(1)
+    assertEquals(second.firstName, "yy")
+
+    People third = sorted.get(2)
+    assertEquals(third.firstName, "zz")
+  }
+  
+  @Test
+  public void testGreatest(){
+    def byFirstName = Ordering.natural().onResultOf(firstNameFn)
+    def people = ImmutableList.of(new People("zz", "a"),
+        new People("xx", "b"), new People("yy", "c"))
+    def two = byFirstName.greatestOf(people, 2)
+
+    assertEquals(two.size(), 2)
+    People first = two.get(0)
+    assertEquals(first.firstName, "zz")
+
+    People second = two.get(1)
+    assertEquals(second.firstName, "yy")
+
+  }
+
 }
