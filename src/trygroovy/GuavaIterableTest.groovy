@@ -7,9 +7,11 @@ import com.google.common.collect.Lists
 
 import static org.junit.Assert.*
 import org.junit.Test;
-
+/**
+ * Go through the API of the Guava Iterables package and test
+ * the functions in the package.
+ */
 class GuavaIterableTest {
-
   @Test
   public void testAddAll() {
     def b = new ArrayList<Integer>()
@@ -101,6 +103,13 @@ class GuavaIterableTest {
       }
     })
     assertEquals(b.size(), 1)
+  }
+  
+  @Test 
+  void testElementsEqual() {
+    def x = ImmutableList.of(1,2)
+    def y = Lists.newArrayList(1,2)
+    assertTrue(Iterables.elementsEqual(x, y))
   }
   
 }
