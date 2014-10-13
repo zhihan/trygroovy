@@ -3,7 +3,9 @@ package trygroovy;
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.Iterables
 import com.google.common.base.Predicate
+import com.google.common.base.Function
 import com.google.common.collect.Lists
+import com.google.common.collect.Ordering
 
 import static org.junit.Assert.*
 import org.junit.Test;
@@ -112,4 +114,84 @@ class GuavaIterableTest {
     assertTrue(Iterables.elementsEqual(x, y))
   }
   
+  @Test
+  void testFind() {
+    def x = ImmutableList.of(1,2,3)
+    Integer b = Iterables.find(x, new Predicate<Integer>() {
+      @Override boolean apply(Integer i) {
+        return (i == 2);
+        }
+      })
+    assertEquals(b, 2)
+    
+    Integer c = Iterables.find(x, new Predicate<Integer>() {
+          @Override
+          boolean apply(Integer i) {
+            return (i > 5);
+          }
+        }, 6)
+    assertEquals(c, 6)
+  }
+  
+  @Test
+  void testGet() {
+    def x = ImmutableList.of(1,2,3)
+    Integer y = Iterables.get(x, 1)
+    assertEquals(y, 2)
+    Integer z = Iterables.get(x, 5, 0) // default value
+    assertEquals(z, 0)
+  }
+  
+  @Test
+  void testMergeSort(){
+    // If the input is already sorted, the output will be a merged
+    // copy of the sorted items.
+    def x = ImmutableList.of(ImmutableList.of(2,4), 
+      ImmutableList.of(1,3))
+    def y = Iterables.mergeSorted(x, Ordering.natural()).toList()
+    assertTrue(Iterables.elementsEqual(y, 
+      ImmutableList.of(1,2,3,4)))
+  }
+  
+  @Test
+  void testPartition() {
+    def x = ImmutableList.of(1,2,3,4)
+    def y = Iterables.partition(x, 2)
+    assertTrue(Iterables.elementsEqual(y.get(0), ImmutableList.of(1,2)))
+    assertTrue(Iterables.elementsEqual(y.get(1), ImmutableList.of(3,4)))  
+  }
+  
+  @Test
+  void testRemoveAll() {
+    def x = Lists.newArrayList(1,2)
+    def y = Iterables.removeAll(x, ImmutableList.of(1,2,3))
+    assertTrue(x.isEmpty())
+    assertTrue(y)
+  }
+  
+  @Test
+  void testRemoveIf() {
+    def x = Lists.newArrayList(1,2,3,4)
+    def y = Iterables.removeIf(x, new Predicate<Integer>(){
+      @Override
+      boolean apply(Integer i) {
+        return i > 2;
+      }
+    })
+    assertTrue(x.size() == 2)
+    assertTrue(y)
+  }
+  
+  @Test
+  void testTransform() {
+    def x = ImmutableList.of(1,2,3)
+    def y = Iterables.transform(x, new Function<Integer, Integer>(){
+      @Override
+      Integer apply(Integer i) {
+        return i*2;
+      } 
+    })
+    
+    assertTrue(Iterables.elementsEqual(y, ImmutableList.of(2,4,6)))
+  }
 }
