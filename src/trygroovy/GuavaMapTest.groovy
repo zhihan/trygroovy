@@ -1,8 +1,12 @@
 package trygroovy;
 
+import com.google.common.base.Function
+import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableClassToInstanceMap
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedMap
+import com.google.common.collect.Maps
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -51,5 +55,19 @@ class GuavaMapTest {
     def j = m.lowerEntry("2")
     assertEquals(j.getKey(), "1")
     assertEquals(j.getValue(), 1)
+  }
+  
+  @Test
+  void testUniqueIndex(){
+    List<String> x = ImmutableList.of("a","ab","abc")
+    def m = Maps.uniqueIndex(x, new Function<String, Integer>(){
+      @Override
+      Integer apply(String s) {
+        return s.length();
+      }
+    })
+    assertEquals(m.get(1), "a")
+    assertEquals(m.get(3), "abc")
+    
   }
 }
